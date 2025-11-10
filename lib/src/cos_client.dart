@@ -45,7 +45,7 @@ class CosConfig {
     this.token,
   });
 
-  url({String? bucket, String? path, String? sRegion, String? sDomain}) {
+  String url({String? bucket, String? path, String? sRegion, String? sDomain}) {
     sDomain ??= domain;
     sRegion ??= region;
     if (null == sDomain) {

@@ -23,7 +23,7 @@ class CosHeaders {
   static const String xCosTagging = 'x-cos-tagging';
 
   /// 包括用户自定义元数据头部后缀和用户自定义元数据信息，将作为对象元数据保存，大小限制为2KB. 注意：用户自定义元数据信息支持下划线（_），但用户自定义元数据头部后缀不支持下划线，仅支持减号（-）
-  static String xCosMeta(value) => 'x-cos-meta-$value';
+  static String xCosMeta(String value) => 'x-cos-meta-$value';
 
   /// 针对本次上传进行流量控制的限速值，必须为数字，单位默认为 bit/s。限速值设置范围为819200 - 838860800，即100KB/s - 100MB/s，如果超出该范围将返回400错误
   static const String xCosTrafficLimit = 'x-cos-traffic-limit';
