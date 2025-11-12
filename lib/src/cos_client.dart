@@ -173,6 +173,7 @@ class CosClient {
     Map<String, String?>? headers,
     ProgressCallback? onReceiveProgress,
     bool? persistentConnection,
+    CancelToken? cancelToken,
   }) async {
     headers ??= {};
     Map<String, String?> finalHeaders = {};
@@ -201,7 +202,8 @@ class CosClient {
         key: objectKey,
         responseType: ResponseType.bytes,
         onReceiveProgress: onReceiveProgress,
-        persistentConnection: persistentConnection);
+        persistentConnection: persistentConnection,
+        cancelToken: cancelToken);
     return CosResponse<GetObjectResult>(
         statusCode: res.statusCode,
         headers: res.headers.map,
@@ -225,6 +227,9 @@ class CosClient {
     Map<String, String?>? headers,
     ProgressCallback? onReceiveProgress,
     bool? persistentConnection,
+    CancelToken? cancelToken,
+    bool deleteOnError = true,
+    FileAccessMode fileAccessMode = FileAccessMode.write,
   }) async {
     headers ??= {};
     Map<String, String?> finalHeaders = {};
@@ -254,7 +259,10 @@ class CosClient {
         responseType: ResponseType.bytes,
         onReceiveProgress: onReceiveProgress,
         savePath: saveFile.path,
-        persistentConnection: persistentConnection);
+        persistentConnection: persistentConnection,
+        cancelToken: cancelToken,
+        deleteOnError: deleteOnError,
+        fileAccessMode: fileAccessMode);
     return CosResponse<GetObjectFileResult>(
         statusCode: res.statusCode,
         headers: res.headers.map,
@@ -717,7 +725,10 @@ class CosClient {
       ResponseType? responseType = ResponseType.plain,
       ProgressCallback? onReceiveProgress,
       String? savePath,
-      bool? persistentConnection}) async {
+      bool? persistentConnection,
+      CancelToken? cancelToken,
+      bool deleteOnError = true,
+      FileAccessMode fileAccessMode = FileAccessMode.write}) async {
     query ??= {};
     Log.d('request query---$query');
     String sQuery = query.isNotEmpty
@@ -752,7 +763,8 @@ class CosClient {
                 persistentConnection: persistentConnection,
                 contentType: headers[HttpHeaders.contentTypeHeader]),
             onSendProgress: onSendProgress,
-            onReceiveProgress: onReceiveProgress);
+            onReceiveProgress: onReceiveProgress,
+            cancelToken: cancelToken);
       } else {
         response = await _dio.downloadUri(uri, savePath,
             data: stream ?? data,
@@ -762,7 +774,10 @@ class CosClient {
                 responseType: responseType,
                 persistentConnection: persistentConnection,
                 contentType: headers[HttpHeaders.contentTypeHeader]),
-            onReceiveProgress: onReceiveProgress);
+            onReceiveProgress: onReceiveProgress,
+            cancelToken: cancelToken,
+            deleteOnError: deleteOnError,
+            fileAccessMode: fileAccessMode);
       }
     } on DioException catch (e) {
       var res = e.response;
